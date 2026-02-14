@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOKING TOEKANG TJUKUR HAIRSTUDIO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            color: #ffffff;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 4px solid #666666;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #cccccc;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #000000;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #cccccc;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            background: #ffffff;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .time-slot {
+            padding: 12px;
+            border: 2px solid #cccccc;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #ffffff;
+            font-weight: 600;
+            color: #333333;
+        }
+
+        .time-slot:hover:not(.booked) {
+            border-color: #000000;
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .time-slot.selected {
+            background: #000000;
+            color: #ffffff;
+            border-color: #000000;
+        }
+
+        .time-slot.booked {
+            background: #666666;
+            color: #cccccc;
+            border-color: #999999;
+            cursor: not-allowed;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit:hover {
+            background: #333333;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-submit:disabled {
+            background: #999999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 20px 30px;
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #000000;
+            border-left: 4px solid #666666;
+        }
+
+        .notification.error {
+            background: #333333;
+            border-left: 4px solid #ff0000;
+        }
+
+        .booking-list {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 3px solid #000000;
+        }
+
+        .booking-list h2 {
+            color: #000000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #cccccc;
+        }
+
+        th {
+            background: #000000;
+            font-weight: 600;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        tr:hover {
+            background: #f0f0f0;
+        }
+
+        .export-btn {
+            background: #000000;
+            color: #ffffff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .export-btn:hover {
+            background: #333333;
+            transform: translateY(-2px);
+        }
+
+        .info-text {
+            background: #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #000000;
+            border-left: 4px solid #000000;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .header h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BOOKING TOEKANG TJUKUR HAIRSTUDIO</h1>
+            <p>Jam Operasional: 10:00 - 21:00</p>
+        </div>
+
+        <div class="content">
+            <div class="info-text">
+                <strong>Catatan:</strong> Setiap jam hanya bisa dipesan 1 kali. Silakan pilih jam yang masih tersedia.
+            </div>
+
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="nama">Nama Lengkap *</label>
+                    <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap">
+                </div>
+
+                <div class="form-group">
+                    <label for="whatsapp">Nomor WhatsApp *</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" required placeholder="Contoh: 08123456789" pattern="[0-9]+">
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal">Tanggal Booking *</label>
+                    <input type="date" id="tanggal" name="tanggal" required min="">
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Jam Booking *</label>
+                    <div class="time-slots" id="timeSlots">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                    <input type="hidden" id="selectedTime" name="jam" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Konfirmasi Booking</button>
+            </form>
+
+            <div class="booking-list">
+                <h2>Daftar Booking Hari Ini</h2>
+                <button class="export-btn" onclick="exportToExcel()">Export ke Excel</button>
+                <table id="bookingTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>WhatsApp</th>
+                            <th>Tanggal</th>
+                            <th>Jam</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingTableBody">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Konfigurasi WhatsApp Admin
+        const ADMIN_WHATSAPP = '6285647090054';
+        
+        // Inisialisasi data booking dari localStorage
+        let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        
+        // Generate time slots dari jam 10:00 sampai 21:00
+        function generateTimeSlots() {
+            const slots = [];
+            for (let i = 10; i <= 21; i++) {
+                const hour = i.toString().padStart(2, '0');
+                slots.push(`${hour}:00`);
+            }
+            return slots;
+        }
+
+        // Render time slots
+        function renderTimeSlots() {
+            const container = document.getElementById('timeSlots');
+            const selectedDate = document.getElementById('tanggal').value;
+            container.innerHTML = '';
+            
+            const timeSlots = generateTimeSlots();
+            
+            timeSlots.forEach(time => {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+                slot.textContent = time;
+                
+                // Cek apakah jam sudah dibooking untuk tanggal yang dipilih
+                const isBooked = bookings.some(b => 
+                    b.tanggal === selectedDate && b.jam === time
+                );
+                
+                if (isBooked) {
+                    slot.classList.add('booked');
+                    slot.title = 'Sudah dibooking';
+                } else {
+                    slot.onclick = () => selectTime(slot, time);
+                }
+                
+                container.appendChild(slot);
+            });
+        }
+
+        // Pilih jam
+        function selectTime(element, time) {
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('selectedTime').value = time;
+        }
+
+        // Tampilkan notifikasi
+        function showNotification(message, type = 'success') {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.classList.add('show');
+            
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
+
+        // Kirim notifikasi WhatsApp ke Admin
+        function sendWhatsAppNotification(bookingData) {
+            const message = `*BOOKING BARU TOEKANG TJUKUR*%0A%0A` +
+                           `📅 *Detail Booking:*%0A` +
+                           `Nama: ${bookingData.nama}%0A` +
+                           `WhatsApp: ${bookingData.whatsapp}%0A` +
+                           `Tanggal: ${bookingData.tanggal}%0A` +
+                           `Jam: ${bookingData.jam}%0A%0A` +
+                           `Harap konfirmasi ke customer.`;
+            
+            // Buka WhatsApp Web/App dengan pesan ke admin
+            const waLink = `https://wa.me/${ADMIN_WHATSAPP}?text=${message}`;
+            window.open(waLink, '_blank');
+        }
+
+        // Handle form submit
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('nama').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const tanggal = document.getElementById('tanggal').value;
+            const jam = document.getElementById('selectedTime').value;
+            
+            if (!jam) {
+                showNotification('Silakan pilih jam booking!', 'error');
+                return;
+            }
+            
+            // Cek double booking
+            const isDoubleBooked = bookings.some(b => 
+                b.tanggal === tanggal && b.jam === jam
+            );
+            
+            if (isDoubleBooked) {
+                showNotification('Maaf, jam tersebut sudah dibooking!', 'error');
+                renderTimeSlots();
+                return;
+            }
+            
+            const bookingData = {
+                id: Date.now(),
+                nama,
+                whatsapp,
+                tanggal,
+                jam,
+                timestamp: new Date().toISOString()
+            };
+            
+            bookings.push(bookingData);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+            
+            // Kirim notifikasi WhatsApp ke admin
+            sendWhatsAppNotification(bookingData);
+            
+            showNotification('Booking berhasil! Notifikasi WhatsApp telah dikirim ke admin.');
+            
+            this.reset();
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            
+            renderTimeSlots();
+            renderBookingTable();
+        });
+
+        // Render tabel booking
+        function renderBookingTable() {
+            const tbody = document.getElementById('bookingTableBody');
+            tbody.innerHTML = '';
+            
+            const sortedBookings = [...bookings].sort((a, b) => {
+                const dateA = new Date(a.tanggal + ' ' + a.jam);
+                const dateB = new Date(b.tanggal + ' ' + b.jam);
+                return dateB - dateA;
+            });
+            
+            sortedBookings.forEach((booking, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${booking.nama}</td>
+                    <td>${booking.whatsapp}</td>
+                    <td>${booking.tanggal}</td>
+                    <td>${booking.jam}</td>
+                    <td>Aktif</td>
+                `;
+            });
+        }
+
+        // Export ke Excel (CSV format)
+        function exportToExcel() {
+            if (bookings.length === 0) {
+                showNotification('Tidak ada data untuk diexport!', 'error');
+                return;
+            }
+            
+            let csv = 'No,Nama,WhatsApp,Tanggal,Jam,Waktu Booking\n';
+            
+            bookings.forEach((b, i) => {
+                csv += `${i + 1},${b.nama},${b.whatsapp},${b.tanggal},${b.jam},${b.timestamp}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `booking_toekang_tjukur_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            showNotification('Data berhasil diexport ke Excel!');
+        }
+
+        // Set minimum date ke hari ini
+        document.getElementById('tanggal').min = new Date().toISOString().split('T')[0];
+        
+        // Event listener untuk perubahan tanggal
+        document.getElementById('tanggal').addEventListener('change', renderTimeSlots);
+        
+        // Inisialisasi
+        renderTimeSlots();
+        renderBookingTable();
+    </script>
+</body>
+</html>
